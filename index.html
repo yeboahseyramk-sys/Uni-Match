@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UniMatch - Campus Dating</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- ========== SPLASH SCREEN ========== -->
+        <div id="screen-splash" class="screen active">
+            <div class="splash-bg">
+                <div class="gradient-orb orb-1"></div>
+                <div class="gradient-orb orb-2"></div>
+                <div class="gradient-orb orb-3"></div>
+            </div>
+            <div class="splash-content">
+                <div class="logo-container">
+                    <div class="logo-heart">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h1 class="app-title">UniMatch</h1>
+                    <p class="app-tagline">Find your campus connection</p>
+                </div>
+                <div class="splash-buttons">
+                    <button class="btn btn-primary btn-large" onclick="navigateTo('screen-login')">
+                        Get Started
+                    </button>
+                    <p class="signin-text">Already have an account? <a href="#" onclick="navigateTo('screen-login')">Sign In</a></p>
+                </div>
+                <p class="university-badge"><i class="fas fa-shield-alt"></i> Student-Verified Community</p>
+            </div>
+        </div>
+
+        <!-- ========== LOGIN / SIGNUP SCREEN ========== -->
+        <div id="screen-login" class="screen">
+            <div class="auth-header">
+                <button class="btn-back" onclick="navigateTo('screen-splash')"><i class="fas fa-arrow-left"></i></button>
+                <h2>Student Login</h2>
+            </div>
+            <div class="auth-content">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Log In</button>
+                    <button class="auth-tab" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="tab-login" class="auth-panel active">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="you@email.com" id="login-email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="••••••••" id="login-password">
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox-label"><input type="checkbox"> Remember me</label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    <button class="btn btn-primary btn-large" onclick="handleLogin()">Log In</button>
+                    <div class="divider"><span>or</span></div>
+                    <button class="btn btn-google btn-large" onclick="signInWithGoogle()">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        Continue with Google
+                    </button>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="tab-signup" class="auth-panel">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="you@email.com" id="signup-email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Create password" id="signup-password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Confirm password" id="signup-password2">
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox-label"><input type="checkbox" id="signup-terms"> I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a></label>
+                    </div>
+                    <button class="btn btn-primary btn-large" onclick="handleSignup()">Create Account</button>
+                    <div class="divider"><span>or</span></div>
+                    <button class="btn btn-google btn-large" onclick="signInWithGoogle()">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        Continue with Google
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== PROFILE SETUP SCREEN ========== -->
+        <div id="screen-profile-setup" class="screen">
+            <div class="setup-header">
+                <div class="step-progress">
+                    <div class="progress-bar"><div class="progress-fill" style="width: 33%"></div></div>
+                    <span class="step-count">Step 1 of 3</span>
+                </div>
+                <h2>Create Your Profile</h2>
+            </div>
+            <div class="setup-content">
+                <div class="photo-upload-section">
+                    <div class="photo-grid">
+                        <div class="photo-slot main-photo" onclick="triggerPhotoUpload(this)">
+                            <i class="fas fa-camera"></i>
+                            <span>Main Photo</span>
+                        </div>
+                        <div class="photo-slot" onclick="triggerPhotoUpload(this)">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="photo-slot" onclick="triggerPhotoUpload(this)">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="photo-slot" onclick="triggerPhotoUpload(this)">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+                    <p class="photo-hint">Add at least 2 photos to continue</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" placeholder="How should we call you?" id="profile-name">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Age</label>
+                        <input type="number" placeholder="20" id="profile-age" min="18" max="30">
+                    </div>
+                    <div class="form-group half">
+                        <label>Gender</label>
+                        <select id="profile-gender">
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="nonbinary">Non-binary</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Faculty / Department</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                        <input type="text" placeholder="e.g. Computer Science" id="profile-faculty">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Short Bio <span class="char-count">0/150</span></label>
+                    <textarea placeholder="Tell others about yourself..." maxlength="150" id="profile-bio" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Interests</label>
+                    <div class="interests-grid" id="interests-grid">
+                        <span class="interest-tag" onclick="toggleInterest(this)">🎵 Music</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">📚 Reading</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">🏃 Fitness</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">🎮 Gaming</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">🎨 Art</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">🍳 Cooking</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">✈️ Travel</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">📸 Photography</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">🎬 Movies</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">⚽ Sports</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">💻 Tech</span>
+                        <span class="interest-tag" onclick="toggleInterest(this)">🐶 Animals</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="goToPreferences()">Continue</button>
+            </div>
+        </div>
+
+        <!-- ========== PREFERENCES SETUP ========== -->
+        <div id="screen-preferences" class="screen">
+            <div class="setup-header">
+                <div class="step-progress">
+                    <div class="progress-bar"><div class="progress-fill" style="width: 66%"></div></div>
+                    <span class="step-count">Step 2 of 3</span>
+                </div>
+                <h2>Your Preferences</h2>
+            </div>
+            <div class="setup-content">
+                <div class="form-group">
+                    <label>I'm interested in</label>
+                    <div class="preference-options">
+                        <button class="pref-option" onclick="selectPreference(this)">Men</button>
+                        <button class="pref-option" onclick="selectPreference(this)">Women</button>
+                        <button class="pref-option" onclick="selectPreference(this)">Everyone</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Age Range</label>
+                    <div class="range-slider">
+                        <div class="range-values">
+                            <span id="age-min">18</span>
+                            <span id="age-max">25</span>
+                        </div>
+                        <input type="range" min="18" max="30" value="18" class="range-input" id="range-min" oninput="updateAgeRange()">
+                        <input type="range" min="18" max="30" value="25" class="range-input" id="range-max" oninput="updateAgeRange()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Max Distance</label>
+                    <div class="distance-slider">
+                        <span class="distance-value" id="distance-value">On Campus</span>
+                        <input type="range" min="1" max="50" value="5" id="distance-range" oninput="updateDistance()">
+                        <div class="distance-labels">
+                            <span>Same building</span>
+                            <span>Campus</span>
+                            <span>City</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="goToPrivacySettings()">Continue</button>
+            </div>
+        </div>
+
+        <!-- ========== PRIVACY SETTINGS ========== -->
+        <div id="screen-privacy" class="screen">
+            <div class="setup-header">
+                <div class="step-progress">
+                    <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                    <span class="step-count">Step 3 of 3</span>
+                </div>
+                <h2>Privacy Settings</h2>
+            </div>
+            <div class="setup-content">
+                <div class="privacy-options">
+                    <div class="privacy-item">
+                        <div class="privacy-info">
+                            <h4>Hide My Age</h4>
+                            <p>Your age won't be shown on your profile</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hide-age">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div class="privacy-info">
+                            <h4>Only Show Me to Matches</h4>
+                            <p>Only people you've liked can see your profile</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="restrict-visibility">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div class="privacy-info">
+                            <h4>Incognito Mode</h4>
+                            <p>Browse without appearing in others' feeds</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="incognito">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="privacy-item">
+                        <div class="privacy-info">
+                            <h4>Two-Factor Authentication</h4>
+                            <p>Add extra security to your account</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="2fa">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="terms-agreement">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="terms-agree">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Community Guidelines</a>
+                    </label>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="completeOnboarding()">Start Matching</button>
+            </div>
+        </div>
+
+        <!-- ========== MAIN APP ========== -->
+        <div id="screen-main" class="screen">
+            <!-- Header -->
+            <div class="app-header">
+                <button class="header-btn" onclick="showScreen('screen-profile-view')"><i class="fas fa-user"></i></button>
+                <div class="header-logo">
+                    <i class="fas fa-heart"></i>
+                    <span>UniMatch</span>
+                </div>
+                <button class="header-btn" onclick="showFilterModal()"><i class="fas fa-sliders-h"></i></button>
+            </div>
+
+            <!-- Discovery Content -->
+            <div class="main-content">
+                <div class="card-stack" id="card-stack">
+                    <!-- Cards will be injected by JS -->
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn rewind" onclick="rewindCard()"><i class="fas fa-undo"></i></button>
+                    <button class="action-btn pass" onclick="swipeCard('left')"><i class="fas fa-times"></i></button>
+                    <button class="action-btn superlike" onclick="superLike()"><i class="fas fa-star"></i></button>
+                    <button class="action-btn like" onclick="swipeCard('right')"><i class="fas fa-heart"></i></button>
+                    <button class="action-btn boost" onclick="boostProfile()"><i class="fas fa-bolt"></i></button>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <button class="nav-item active" onclick="switchTab('discover')">
+                    <i class="fas fa-compass"></i>
+                    <span>Discover</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('matches')">
+                    <i class="fas fa-heart"></i>
+                    <span class="nav-badge" id="matches-badge">3</span>
+                    <span>Matches</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('messages')">
+                    <i class="fas fa-comment"></i>
+                    <span class="nav-badge" id="messages-badge">5</span>
+                    <span>Messages</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========== MATCHES SCREEN ========== -->
+        <div id="screen-matches" class="screen">
+            <div class="app-header">
+                <div class="header-logo">
+                    <span>Matches</span>
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="matches-section">
+                    <h3>New Matches</h3>
+                    <div class="matches-grid" id="new-matches">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+                <div class="matches-section">
+                    <h3>Messages</h3>
+                    <div class="messages-list" id="messages-list">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <button class="nav-item" onclick="switchTab('discover')">
+                    <i class="fas fa-compass"></i>
+                    <span>Discover</span>
+                </button>
+                <button class="nav-item active" onclick="switchTab('matches')">
+                    <i class="fas fa-heart"></i>
+                    <span>Matches</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('messages')">
+                    <i class="fas fa-comment"></i>
+                    <span>Messages</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========== CHAT SCREEN ========== -->
+        <div id="screen-chat" class="screen">
+            <div class="chat-header">
+                <button class="btn-back" onclick="closeChat()"><i class="fas fa-arrow-left"></i></button>
+                <div class="chat-user-info">
+                    <img src="" alt="" class="chat-avatar" id="chat-avatar">
+                    <div class="chat-user-details">
+                        <h4 id="chat-name">Name</h4>
+                        <span class="chat-status" id="chat-status">Online</span>
+                    </div>
+                </div>
+                <button class="header-btn"><i class="fas fa-ellipsis-v"></i></button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages injected by JS -->
+            </div>
+            <div class="chat-input-area">
+                <button class="chat-action-btn"><i class="fas fa-plus-circle"></i></button>
+                <div class="chat-input-wrapper">
+                    <input type="text" placeholder="Type a message..." id="chat-input" onkeypress="handleChatKeypress(event)">
+                    <button class="emoji-btn"><i class="far fa-smile"></i></button>
+                </div>
+                <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- ========== PROFILE VIEW SCREEN ========== -->
+        <div id="screen-profile-view" class="screen">
+            <div class="profile-view-header">
+                <button class="btn-back" onclick="navigateTo('screen-main')"><i class="fas fa-arrow-left"></i></button>
+                <button class="header-btn" onclick="showEditProfile()"><i class="fas fa-pen"></i></button>
+            </div>
+            <div class="profile-view-content">
+                <div class="profile-photos-carousel">
+                    <div class="profile-photo active" style="background-image: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=500&fit=crop')"></div>
+                    <div class="photo-dots">
+                        <span class="photo-dot active"></span>
+                        <span class="photo-dot"></span>
+                        <span class="photo-dot"></span>
+                    </div>
+                </div>
+                <div class="profile-info-card">
+                    <h2>Alex Johnson <span class="age">21</span></h2>
+                    <p class="profile-faculty"><i class="fas fa-graduation-cap"></i> Computer Science</p>
+                    <p class="profile-bio">Coffee addict, code lover, always up for a study break. Looking for someone to explore the city with!</p>
+                    <div class="profile-interests">
+                        <span class="interest-pill">🎵 Music</span>
+                        <span class="interest-pill">💻 Tech</span>
+                        <span class="interest-pill">☕ Coffee</span>
+                        <span class="interest-pill">📸 Photography</span>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="profile-action-btn" onclick="navigateTo('screen-main')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <button class="profile-action-btn like" onclick="likeFromProfile()">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SETTINGS SCREEN ========== -->
+        <div id="screen-settings" class="screen">
+            <div class="app-header">
+                <div class="header-logo">
+                    <span>Settings</span>
+                </div>
+            </div>
+            <div class="main-content settings-content">
+                <div class="settings-section">
+                    <h3>Account</h3>
+                    <div class="settings-list">
+                        <button class="settings-item">
+                            <i class="fas fa-user"></i>
+                            <span>Edit Profile</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="settings-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Privacy & Safety</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="settings-item">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Preferences</h3>
+                    <div class="settings-list">
+                        <button class="settings-item">
+                            <i class="fas fa-filter"></i>
+                            <span>Discovery Settings</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="settings-item">
+                            <i class="fas fa-globe"></i>
+                            <span>Language</span>
+                            <span class="settings-value">English</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Support</h3>
+                    <div class="settings-list">
+                        <button class="settings-item">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help Center</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="settings-item">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Report a Problem</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline btn-danger" onclick="logout()">Log Out</button>
+                <p class="version-text">UniMatch v1.0.0</p>
+            </div>
+            <div class="bottom-nav">
+                <button class="nav-item" onclick="switchTab('discover')">
+                    <i class="fas fa-compass"></i>
+                    <span>Discover</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('matches')">
+                    <i class="fas fa-heart"></i>
+                    <span>Matches</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('messages')">
+                    <i class="fas fa-comment"></i>
+                    <span>Messages</span>
+                </button>
+                <button class="nav-item active" onclick="switchTab('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========== MATCH MODAL ========== -->
+        <div id="match-modal" class="modal">
+            <div class="modal-content match-modal-content">
+                <div class="match-animation">
+                    <div class="match-hearts">
+                        <i class="fas fa-heart heart-1"></i>
+                        <i class="fas fa-heart heart-2"></i>
+                        <i class="fas fa-heart heart-3"></i>
+                    </div>
+                    <h2>It's a Match!</h2>
+                    <p>You and <span id="match-name">Emma</span> liked each other</p>
+                </div>
+                <div class="match-profiles">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop" alt="You" class="match-photo">
+                    <img src="" alt="Match" class="match-photo" id="match-photo">
+                </div>
+                <div class="match-actions">
+                    <button class="btn btn-secondary" onclick="closeMatchModal()">Keep Swiping</button>
+                    <button class="btn btn-primary" onclick="openChatFromMatch()">Send Message</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== FILTER MODAL ========== -->
+        <div id="filter-modal" class="modal">
+            <div class="modal-content filter-modal-content">
+                <div class="modal-header">
+                    <h3>Filters</h3>
+                    <button class="btn-close" onclick="closeFilterModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="filter-body">
+                    <div class="filter-group">
+                        <label>Show Me</label>
+                        <div class="filter-options">
+                            <button class="filter-option active">Everyone</button>
+                            <button class="filter-option">Men</button>
+                            <button class="filter-option">Women</button>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Age Range: <span id="filter-age-range">18 - 25</span></label>
+                        <input type="range" min="18" max="30" value="25" class="filter-range">
+                    </div>
+                    <div class="filter-group">
+                        <label>Faculty</label>
+                        <div class="filter-tags">
+                            <span class="filter-tag">Engineering</span>
+                            <span class="filter-tag">Business</span>
+                            <span class="filter-tag">Arts</span>
+                            <span class="filter-tag">Science</span>
+                            <span class="filter-tag">Medicine</span>
+                            <span class="filter-tag">Law</span>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Interests</label>
+                        <div class="filter-tags">
+                            <span class="filter-tag">Music</span>
+                            <span class="filter-tag">Sports</span>
+                            <span class="filter-tag">Gaming</span>
+                            <span class="filter-tag">Travel</span>
+                            <span class="filter-tag">Art</span>
+                            <span class="filter-tag">Tech</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-large" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
