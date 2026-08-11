@@ -65,7 +65,7 @@
                     </div>
                     <div class="form-options">
                         <label class="checkbox-label"><input type="checkbox"> Remember me</label>
-                        <a href="#" class="forgot-link">Forgot password?</a>
+                        <a href="#" class="forgot-link" onclick="showToast('Password reset coming soon')">Forgot password?</a>
                     </div>
                     <button class="btn btn-primary btn-large" onclick="handleLogin()">Log In</button>
                     <div class="divider"><span>or</span></div>
@@ -111,12 +111,27 @@
             </div>
         </div>
 
+        <!-- ========== EMAIL VERIFICATION SCREEN ========== -->
+        <div id="screen-verify-email" class="screen">
+            <div class="auth-header">
+                <h2>Verify Your Email</h2>
+            </div>
+            <div class="auth-content" style="text-align:center; padding-top:60px;">
+                <div style="font-size:60px; margin-bottom:24px;">📧</div>
+                <h3 style="margin-bottom:12px;">Check your inbox</h3>
+                <p style="color:var(--text-muted); margin:16px 24px; line-height:1.6;">We sent a verification link to <br><strong id="verify-email-address" style="color:var(--text);"></strong></p>
+                <p style="color:var(--text-muted); font-size:13px; margin:16px 24px; line-height:1.6;">Click the link in the email to activate your account, then come back and click the button below.</p>
+                <button class="btn btn-primary btn-large" onclick="checkVerification()" style="margin-top:32px;">I've Verified My Email</button>
+                <button class="btn btn-outline btn-large" onclick="resendVerification()" style="margin-top:12px; border-color:var(--glass-border);">Resend Email</button>
+            </div>
+        </div>
+
         <!-- ========== PROFILE SETUP SCREEN ========== -->
         <div id="screen-profile-setup" class="screen">
             <div class="setup-header">
                 <div class="step-progress">
-                    <div class="progress-bar"><div class="progress-fill" style="width: 33%"></div></div>
-                    <span class="step-count">Step 1 of 3</span>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 25%"></div></div>
+                    <span class="step-count">Step 1 of 4</span>
                 </div>
                 <h2>Create Your Profile</h2>
             </div>
@@ -136,8 +151,14 @@
                         <div class="photo-slot" onclick="triggerPhotoUpload(this)">
                             <i class="fas fa-plus"></i>
                         </div>
+                        <div class="photo-slot" onclick="triggerPhotoUpload(this)">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="photo-slot" onclick="triggerPhotoUpload(this)">
+                            <i class="fas fa-plus"></i>
+                        </div>
                     </div>
-                    <p class="photo-hint">Add at least 2 photos to continue</p>
+                    <p class="photo-hint">Upload at least 3 photos to continue</p>
                 </div>
 
                 <div class="form-group">
@@ -147,8 +168,9 @@
 
                 <div class="form-row">
                     <div class="form-group half">
-                        <label>Age</label>
-                        <input type="number" placeholder="20" id="profile-age" min="18" max="30">
+                        <label>Date of Birth <span style="color:var(--danger)">*</span></label>
+                        <input type="date" id="profile-dob" max="2008-12-31" min="1990-01-01">
+                        <p style="font-size:11px; color:var(--text-dim); margin-top:4px;">Age cannot be changed after registration</p>
                     </div>
                     <div class="form-group half">
                         <label>Gender</label>
@@ -192,7 +214,44 @@
                     </div>
                 </div>
 
-                <button class="btn btn-primary btn-large" onclick="goToPreferences()">Continue</button>
+                <button class="btn btn-primary btn-large" onclick="goToFaceVerification()">Continue</button>
+            </div>
+        </div>
+
+        <!-- ========== FACE VERIFICATION SCREEN ========== -->
+        <div id="screen-face-verify" class="screen">
+            <div class="setup-header">
+                <div class="step-progress">
+                    <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
+                    <span class="step-count">Step 2 of 4</span>
+                </div>
+                <h2>Face Verification</h2>
+                <p class="step-desc">Take a quick selfie to verify your identity</p>
+            </div>
+            <div class="setup-content" style="text-align:center;">
+                <div class="camera-container">
+                    <video id="face-camera" autoplay playsinline muted style="display:none;"></video>
+                    <canvas id="face-canvas" style="display:none;"></canvas>
+                    <img id="face-preview" style="display:none; width:100%; max-width:300px; border-radius:16px; margin:0 auto;">
+                    <div id="camera-placeholder" class="camera-placeholder">
+                        <i class="fas fa-user-shield"></i>
+                        <p>Camera access required for verification</p>
+                    </div>
+                </div>
+                <div class="face-verification-actions" style="margin-top:24px; display:flex; flex-direction:column; gap:12px;">
+                    <button class="btn btn-primary btn-large" id="btn-capture-face" onclick="captureFace()">
+                        <i class="fas fa-camera" style="margin-right:8px;"></i>Take Selfie
+                    </button>
+                    <button class="btn btn-secondary btn-large" id="btn-retake-face" onclick="retakeFace()" style="display:none;">
+                        <i class="fas fa-redo" style="margin-right:8px;"></i>Retake
+                    </button>
+                    <button class="btn btn-primary btn-large" id="btn-confirm-face" onclick="confirmFace()" style="display:none;">
+                        Continue
+                    </button>
+                </div>
+                <p style="font-size:12px; color:var(--text-dim); margin-top:20px; padding:0 20px;">
+                    This selfie helps us verify you're a real person. It won't be shown on your public profile.
+                </p>
             </div>
         </div>
 
@@ -200,8 +259,8 @@
         <div id="screen-preferences" class="screen">
             <div class="setup-header">
                 <div class="step-progress">
-                    <div class="progress-bar"><div class="progress-fill" style="width: 66%"></div></div>
-                    <span class="step-count">Step 2 of 3</span>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
+                    <span class="step-count">Step 3 of 4</span>
                 </div>
                 <h2>Your Preferences</h2>
             </div>
@@ -249,7 +308,7 @@
             <div class="setup-header">
                 <div class="step-progress">
                     <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
-                    <span class="step-count">Step 3 of 3</span>
+                    <span class="step-count">Step 4 of 4</span>
                 </div>
                 <h2>Privacy Settings</h2>
             </div>
@@ -347,12 +406,12 @@
                 </button>
                 <button class="nav-item" onclick="switchTab('matches')">
                     <i class="fas fa-heart"></i>
-                    <span class="nav-badge" id="matches-badge">3</span>
+                    <span class="nav-badge" id="matches-badge" style="display:none;">0</span>
                     <span>Matches</span>
                 </button>
                 <button class="nav-item" onclick="switchTab('messages')">
                     <i class="fas fa-comment"></i>
-                    <span class="nav-badge" id="messages-badge">5</span>
+                    <span class="nav-badge" id="messages-badge" style="display:none;">0</span>
                     <span>Messages</span>
                 </button>
                 <button class="nav-item" onclick="switchTab('settings')">
@@ -414,16 +473,16 @@
                         <span class="chat-status" id="chat-status">Online</span>
                     </div>
                 </div>
-                <button class="header-btn"><i class="fas fa-ellipsis-v"></i></button>
+                <button class="header-btn" onclick="showToast('More options coming soon')"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             <div class="chat-messages" id="chat-messages">
                 <!-- Messages injected by JS -->
             </div>
             <div class="chat-input-area">
-                <button class="chat-action-btn"><i class="fas fa-plus-circle"></i></button>
+                <button class="chat-action-btn" onclick="showToast('Media sharing coming soon')"><i class="fas fa-plus-circle"></i></button>
                 <div class="chat-input-wrapper">
                     <input type="text" placeholder="Type a message..." id="chat-input" onkeypress="handleChatKeypress(event)">
-                    <button class="emoji-btn"><i class="far fa-smile"></i></button>
+                    <button class="emoji-btn" onclick="showToast('Emoji picker coming soon')"><i class="far fa-smile"></i></button>
                 </div>
                 <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
             </div>
@@ -477,17 +536,17 @@
                 <div class="settings-section">
                     <h3>Account</h3>
                     <div class="settings-list">
-                        <button class="settings-item">
+                        <button class="settings-item" onclick="showSettingsSection('Edit Profile')">
                             <i class="fas fa-user"></i>
                             <span>Edit Profile</span>
                             <i class="fas fa-chevron-right"></i>
                         </button>
-                        <button class="settings-item">
+                        <button class="settings-item" onclick="showSettingsSection('Privacy & Safety')">
                             <i class="fas fa-shield-alt"></i>
                             <span>Privacy & Safety</span>
                             <i class="fas fa-chevron-right"></i>
                         </button>
-                        <button class="settings-item">
+                        <button class="settings-item" onclick="showSettingsSection('Notifications')">
                             <i class="fas fa-bell"></i>
                             <span>Notifications</span>
                             <i class="fas fa-chevron-right"></i>
@@ -498,7 +557,7 @@
                 <div class="settings-section">
                     <h3>Preferences</h3>
                     <div class="settings-list">
-                        <button class="settings-item">
+                        <button class="settings-item" onclick="showSettingsSection('Discovery Settings')">
                             <i class="fas fa-filter"></i>
                             <span>Discovery Settings</span>
                             <i class="fas fa-chevron-right"></i>
@@ -514,12 +573,12 @@
                 <div class="settings-section">
                     <h3>Support</h3>
                     <div class="settings-list">
-                        <button class="settings-item">
+                        <button class="settings-item" onclick="showSettingsSection('Help Center')">
                             <i class="fas fa-question-circle"></i>
                             <span>Help Center</span>
                             <i class="fas fa-chevron-right"></i>
                         </button>
-                        <button class="settings-item">
+                        <button class="settings-item" onclick="showSettingsSection('Report a Problem')">
                             <i class="fas fa-exclamation-triangle"></i>
                             <span>Report a Problem</span>
                             <i class="fas fa-chevron-right"></i>
@@ -528,7 +587,7 @@
                 </div>
 
                 <button class="btn btn-outline btn-danger" onclick="logout()">Log Out</button>
-                <p class="version-text">UniMatch v1.0.0</p>
+                <p class="version-text">UniMatch v2.0.0</p>
             </div>
             <div class="bottom-nav">
                 <button class="nav-item" onclick="switchTab('discover')">
@@ -563,7 +622,7 @@
                     <p>You and <span id="match-name">Emma</span> liked each other</p>
                 </div>
                 <div class="match-profiles">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop" alt="You" class="match-photo">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop" alt="You" class="match-photo" id="match-photo-self">
                     <img src="" alt="Match" class="match-photo" id="match-photo">
                 </div>
                 <div class="match-actions">
@@ -624,6 +683,7 @@
         <div id="toast" class="toast"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

@@ -432,107 +432,6 @@ html, body {
     font-weight: 500;
 }
 
-/* Verification Steps */
-.step-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    margin-bottom: 24px;
-}
-
-.step-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--bg-light);
-    border: 2px solid var(--text-dim);
-    transition: all 0.3s;
-}
-
-.step-dot.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    box-shadow: 0 0 12px rgba(255, 75, 110, 0.5);
-}
-
-.step-dot.completed {
-    background: var(--success);
-    border-color: var(--success);
-}
-
-.step-line {
-    width: 30px;
-    height: 2px;
-    background: var(--text-dim);
-    border-radius: 1px;
-}
-
-.step-line.completed {
-    background: var(--success);
-}
-
-.verification-step {
-    display: none;
-}
-
-.verification-step.active {
-    display: block;
-    animation: fadeInUp 0.3s ease;
-}
-
-.verification-step h3 {
-    font-size: 22px;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-.step-desc {
-    color: var(--text-muted);
-    text-align: center;
-    margin-bottom: 24px;
-    font-size: 14px;
-}
-
-.code-inputs {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-
-.code-digit {
-    width: 56px;
-    height: 64px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    background: var(--bg-light);
-    border: 2px solid var(--glass-border);
-    border-radius: var(--radius-md);
-    color: var(--text);
-    outline: none;
-    transition: all 0.2s;
-}
-
-.code-digit:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 16px rgba(255, 75, 110, 0.2);
-}
-
-.resend-code {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 13px;
-    margin-bottom: 24px;
-}
-
-.resend-code a {
-    color: var(--primary-light);
-    text-decoration: none;
-    font-weight: 600;
-}
-
 /* ===== DIVIDER ===== */
 .divider {
     display: flex;
@@ -615,6 +514,12 @@ html, body {
 .setup-header h2 {
     font-size: 24px;
     font-weight: 700;
+}
+
+.step-desc {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-top: 4px;
 }
 
 .setup-content {
@@ -904,6 +809,61 @@ html, body {
     text-decoration: none;
 }
 
+/* ===== FACE VERIFICATION ===== */
+.camera-container {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    aspect-ratio: 3/4;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 2px solid var(--glass-border);
+}
+
+.camera-container video,
+.camera-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.camera-container canvas {
+    display: none;
+}
+
+.camera-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--text-dim);
+    padding: 20px;
+    text-align: center;
+}
+
+.camera-placeholder i {
+    font-size: 48px;
+    color: var(--primary-light);
+}
+
+.camera-placeholder p {
+    font-size: 13px;
+}
+
+.face-verification-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
 /* ===== MAIN APP ===== */
 .app-header {
     display: flex;
@@ -1062,30 +1022,19 @@ html, body {
 .card-interest {
     padding: 4px 10px;
     background: var(--bg-light);
-    border-radius: var(--radius-sm);
-    font-size: 11px;
+    border-radius: var(--radius-xl);
+    font-size: 12px;
     color: var(--text-muted);
-}
-
-.card-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    padding: 6px 12px;
-    background: var(--success);
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--bg);
 }
 
 .card-photo-dots {
     position: absolute;
-    top: 16px;
+    top: 12px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 6px;
+    z-index: 5;
 }
 
 .card-photo-dot {
@@ -1093,7 +1042,7 @@ html, body {
     height: 6px;
     border-radius: 50%;
     background: rgba(255,255,255,0.3);
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 
 .card-photo-dot.active {
@@ -1102,47 +1051,63 @@ html, body {
     border-radius: 3px;
 }
 
-/* Swipe Labels */
 .swipe-label {
     position: absolute;
     top: 40px;
     padding: 8px 16px;
-    border: 3px solid;
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     font-size: 24px;
     font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    border: 3px solid;
     transform: rotate(-15deg);
     opacity: 0;
     transition: opacity 0.2s;
     z-index: 10;
 }
 
-.swipe-label.like-label {
+.like-label {
     right: 20px;
     color: var(--success);
     border-color: var(--success);
 }
 
-.swipe-label.nope-label {
+.nope-label {
     left: 20px;
     color: var(--danger);
     border-color: var(--danger);
     transform: rotate(15deg);
 }
 
-.profile-card.show-like .like-label { opacity: 1; }
-.profile-card.show-nope .nope-label { opacity: 1; }
+.profile-card.show-like .like-label {
+    opacity: 1;
+}
+
+.profile-card.show-nope .nope-label {
+    opacity: 1;
+}
+
+.online-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--success);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    box-shadow: 0 0 8px var(--success);
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+}
 
 /* Action Buttons */
 .action-buttons {
     display: flex;
     gap: 16px;
-    justify-content: center;
-    align-items: center;
     margin-top: 20px;
-    padding-bottom: 16px;
+    align-items: center;
 }
 
 .action-btn {
@@ -1150,46 +1115,56 @@ html, body {
     height: 56px;
     border-radius: 50%;
     border: none;
-    background: var(--bg-light);
-    color: var(--text);
     font-size: 22px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
 .action-btn:hover {
     transform: scale(1.1);
 }
 
+.action-btn.rewind {
+    background: var(--bg-light);
+    color: var(--accent);
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+}
+
 .action-btn.pass {
+    background: var(--bg-light);
     color: var(--danger);
-    font-size: 26px;
+    width: 64px;
+    height: 64px;
+    font-size: 28px;
 }
 
 .action-btn.like {
-    width: 64px;
-    height: 64px;
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
+    width: 64px;
+    height: 64px;
     font-size: 28px;
-    box-shadow: 0 8px 24px rgba(255, 75, 110, 0.4);
 }
 
 .action-btn.superlike {
+    background: var(--bg-light);
     color: var(--accent);
-    font-size: 22px;
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
 }
 
 .action-btn.boost {
+    background: var(--bg-light);
     color: var(--secondary);
-}
-
-.action-btn.rewind {
-    color: var(--warning);
+    width: 48px;
+    height: 48px;
     font-size: 18px;
 }
 
@@ -1197,8 +1172,7 @@ html, body {
 .bottom-nav {
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    padding: 10px 0 20px;
+    padding: 12px 0 24px;
     background: var(--bg);
     border-top: 1px solid var(--glass-border);
     z-index: 100;
@@ -1212,12 +1186,12 @@ html, body {
     background: none;
     border: none;
     color: var(--text-dim);
-    font-family: inherit;
     font-size: 11px;
+    font-family: inherit;
     cursor: pointer;
+    transition: all 0.2s;
     position: relative;
     padding: 4px 12px;
-    transition: color 0.2s;
 }
 
 .nav-item i {
@@ -1232,13 +1206,13 @@ html, body {
     position: absolute;
     top: -2px;
     right: 4px;
-    width: 18px;
-    height: 18px;
     background: var(--primary);
-    border-radius: 50%;
+    color: white;
     font-size: 10px;
     font-weight: 700;
-    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1246,24 +1220,24 @@ html, body {
 
 /* ===== MATCHES SCREEN ===== */
 .matches-section {
-    padding: 16px;
+    padding: 16px 20px;
 }
 
 .matches-section h3 {
     font-size: 14px;
     font-weight: 600;
     color: var(--text-muted);
+    margin-bottom: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 12px;
 }
 
 .matches-grid {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     overflow-x: auto;
-    padding-bottom: 8px;
     scrollbar-width: none;
+    padding-bottom: 8px;
 }
 
 .matches-grid::-webkit-scrollbar {
@@ -1275,8 +1249,13 @@ html, body {
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    min-width: 80px;
     cursor: pointer;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.match-item:hover {
+    transform: scale(1.05);
 }
 
 .match-photo-small {
@@ -1286,33 +1265,34 @@ html, body {
     object-fit: cover;
     border: 2px solid var(--primary);
     padding: 2px;
+    background: var(--bg);
 }
 
 .match-name {
     font-size: 12px;
     font-weight: 500;
-    text-align: center;
 }
 
 .messages-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
 }
 
 .message-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
-    background: var(--bg-light);
-    border-radius: var(--radius-md);
+    gap: 14px;
+    padding: 14px 0;
     cursor: pointer;
     transition: background 0.2s;
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .message-item:hover {
     background: var(--glass);
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .message-avatar {
@@ -1534,7 +1514,6 @@ html, body {
 .profile-view-header .btn-back,
 .profile-view-header .header-btn {
     background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(10px);
 }
 
 .profile-view-content {
@@ -1751,7 +1730,6 @@ html, body {
     position: absolute;
     inset: 0;
     background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(8px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1995,6 +1973,8 @@ html, body {
     transition: all 0.3s ease;
     pointer-events: none;
     white-space: nowrap;
+    max-width: 90%;
+    text-align: center;
 }
 
 .toast.show {
